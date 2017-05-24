@@ -2,7 +2,7 @@ React-native-formly
 ===================
 
 Build your forms easily by adding custom components, validations, error messages. 
-###Table of contents
+### Table of contents
 * Installation
 * Usage
 	* Basic usage 
@@ -14,8 +14,8 @@ Build your forms easily by adding custom components, validations, error messages
 ```
 npm install react-native-formly --save
 ```
-##Usage
-###Basic Usage
+## Usage
+### Basic Usage
 We are now working on our ready made components. Till then you can create your custom components, check the next section.
 ```js
 import React from 'react';
@@ -72,7 +72,7 @@ var FormlyApp = React.createClass({
 
 ```
 
-###Create custom components
+### Create custom components
 First you need to create react component and add `FieldMixin` to its `mixins`. The `FieldMixin` adds `onChange` function which you should call when the components value change.  Formly will automaticaly inject to your component the following props: **config**, **model** and **viewValues**.  
 
 `FormlyTextInput.js` 
@@ -111,12 +111,12 @@ FieldsConfig.addType([
   { name: 'input', component: require('./FormlyTextInput') }
 ]);
 ```
-####**Working on the rest of the documentation...** 
+#### **Working on the rest of the documentation...** 
 
-###Contribution
+### Contribution
 Please check `CONTRIBUTING.md`.
 
-###Credits
+### Credits
 * Author - [Assem Hafez](https://github.com/Assem-Hafez)
 * This library was build at [Codelabsys](http://www.codelabsys.com/)
 * Special thanks for [Mohamed Abbas](https://github.com/Mohamed-Abbas) for his help in testing the library.
