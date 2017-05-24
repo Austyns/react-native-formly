@@ -119,5 +119,5 @@ Please check `CONTRIBUTING.md`.
 
 ### Credits
 * Author - [Assem Hafez](https://github.com/Assem-Hafez)
-* This library was build at [Codelabsys](http://www.codelabsys.com/)
-* Special thanks for [Mohamed Abbas](https://github.com/Mohamed-Abbas) for his help in testing the library.
+* This library was built at [Codelabsys](http://www.codelabsys.com/)
+* Special thanks for [Mohamed Abbas](https://github.com/Mohamed-Abbas) for helping out testing the library.
