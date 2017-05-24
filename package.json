@@ -1,0 +1,32 @@
+{
+  "name": "react-native-formly",
+  "version": "0.0.1",
+  "description": "Cross platform forms powered by javascript",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "jsep": "0.3.0"
+  },
+  "peerDependencies": {
+    "react-native": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Assem-Hafez/react-native-formly.git"
+  },
+  "keywords": [
+    "react-native",
+    "formly",
+    "cross-platform",
+    "dynamic-forms",
+    "javascript"
+  ],
+  "author": "Assem Hafez <assem.a.hafez@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Assem-Hafez/react-native-formly/issues"
+  },
+  "homepage": "https://github.com/Assem-Hafez/react-native-formly#readme"
+}
