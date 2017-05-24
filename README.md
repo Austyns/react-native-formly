@@ -1,4 +1,6 @@
-#React-native-formly
+React-native-formly
+===================
+
 Build your forms easily by adding custom components, validations, error messages. 
 ###Table of contents
 * Installation
