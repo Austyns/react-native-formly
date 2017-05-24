@@ -2,6 +2,7 @@ React-native-formly
 ===================
 
 Build your forms easily by adding custom components, validations, error messages. 
+This is a react-native implementation for [Angular Formly](https://github.com/formly-js/angular-formly). 
 ### Table of contents
 * Installation
 * Usage
