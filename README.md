@@ -24,30 +24,30 @@ import {ScrollView } from 'react-native';
 import { Formly} from 'react-native-formly';
 
 var FormlyApp = React.createClass({
-     formlyConfig: {
-        name: "",
-        // add your form fields here
+      formlyConfig: {
         fields: [
+            // add your form fields here
             {
                 key: 'firstInput',
                 type: 'textInput', //The custom component
                 templateOptions: {
-                    placeholder: "first input"
+                    label:"First input label",
+                    placeholder: "First input"
                 }
             },
             {
                 key: 'secondInput',
-                type: 'textInput',//The custom component
+                type: 'textInput',
                 templateOptions: {
-                    placeholder: "second input"
+                    placeholder: "Second input"
                 },
                 hideExpression: "model.firstInput==='hide'", //this hides the input when the first input value equals 'hide'
                 validators: {
-                    maxlength: {
-                        expression: function ({ viewValue, modelValue, param }) {
-                            return viewValue.length <= param;
+                    minlength: {
+                        expression: function ({ viewValue, modelValue }) {
+                            return !!viewValue && viewValue.length >= 4 ;
                         },
-                        message: "'This should be shorter'"
+                        message: "'This should be longer than 4 letters'"
                     }
                 },
             }
@@ -65,7 +65,7 @@ var FormlyApp = React.createClass({
     render: function () {
         return (
             <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
-                <Formly config={this.props.config} model={this.state.model} onFormlyUpdate={this._onFormlyUpdate} onFormlyValidityChange={this._onFormlyValidityChange} />
+                <Formly config={this.formlyConfig} model={this.state.model} onFormlyUpdate={this._onFormlyUpdate} onFormlyValidityChange={this._onFormlyValidityChange} />
             </ScrollView>
         );
     }
@@ -78,29 +78,34 @@ First you need to create react component and add `FieldMixin` to its `mixins`. T
 
 `FormlyTextInput.js` 
 ```js
+import React from 'react';
 import { FieldMixin } from 'react-native-formly';
 import {
-  View,
-  Text,
-  TextInput
+    View,
+    Text,
+    TextInput
 } from 'react-native';
 
-var FormlyTextArea = React.createClass({
-  mixins: [FieldMixin],
-  render: function () {
-    let key = this.props.config.key;
-    let to = this.props.config.templateOptions || {};
-    let model = this.props.model[key];
-    let viewValue = this.props.viewValues[key];
-    return (
-      <View style={{ flex: 1}}>
-        <TextInput editable={!to.disabled} value={model || viewValue} placeholder={to.placeholder} onChangeText={this.onChange} />
-      </View>
-    );
-  }
+var FormlyTextInput = React.createClass({
+    mixins: [FieldMixin],
+    render: function () {
+        let key = this.props.config.key;
+        let to = this.props.config.templateOptions || {};
+        let model = this.props.model[key];
+        let viewValue = this.props.viewValues[key];
+        var fieldValidationResult = this.props.fieldValidation || {};
+        let validationMessages = fieldValidationResult.messages || {}
+        return (
+            <View style={{ flex: 1 }}>
+                <Text style={{fontWeight:"bold",color:"black"}}>{to.label}</Text>
+                <TextInput editable={!to.disabled} underlineColorAndroid={fieldValidationResult.isValid ? "green" : "red"} value={model || viewValue} placeholder={to.placeholder} onChangeText={this.onChange} />
+                <Text style={{ color: "red" }}>{Object.keys(validationMessages).length != 0 ? Object.values(validationMessages)[0] : null}</Text>
+            </View>
+        );
+    }
 });
 
-module.exports = FormlyTextArea;
+module.exports = FormlyTextInput;
 ```
 Now you only need to register your component with `Formly` before using it.
 
@@ -109,7 +114,7 @@ import {Formly, FormlyConfig} from 'react-native-formly';
 let {FieldsConfig} = FormlyConfig;
 
 FieldsConfig.addType([
-  { name: 'input', component: require('./FormlyTextInput') }
+  { name: 'textInput', component: require('./FormlyTextInput') }
 ]);
 ```
 #### **Working on the rest of the documentation...** 
