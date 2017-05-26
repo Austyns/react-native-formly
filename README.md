@@ -74,7 +74,7 @@ var FormlyApp = React.createClass({
 ```
 
 ### Create custom components
-First you need to create react component and add `FieldMixin` to its `mixins`. The `FieldMixin` adds `onChange` function which you should call when the components value change.  Formly will automaticaly inject to your component the following props: **config**, **model** and **viewValues**.  
+First you need to create react component and add `FieldMixin` to its `mixins`. The `FieldMixin` adds `onChange` function which you should call when the components value change.  Formly will automaticaly inject to your component the following props: **config**, **model**, **viewValues** and **fieldValidation**.  
 
 `FormlyTextInput.js` 
 ```js
