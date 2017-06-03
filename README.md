@@ -16,7 +16,8 @@ This is a react-native implementation for [Angular Formly](https://github.com/fo
 npm install react-native-formly --save
 ```
 ## Usage
-<img src="https://github.com/Assem-Hafez/react-native-formly/blob/master/examples/FormlyDemo/app/md_template_example/preview.gif" width="400">
+<img src="https://github.com/Assem-Hafez/react-native-formly/blob/master/examples/FormlyDemo/app/md_template_example/preview.gif" width="400"/>
+
 ### Basic Usage
 First you need to install our ready made template for material components. Then you can start building your awesome forms easily.
 
