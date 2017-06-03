@@ -16,12 +16,13 @@ This is a react-native implementation for [Angular Formly](https://github.com/fo
 npm install react-native-formly --save
 ```
 ## Usage
+<img src="https://github.com/Assem-Hafez/react-native-formly/blob/master/examples/FormlyDemo/app/md_template_example/preview.gif" width="400">
 ### Basic Usage
-First you need to install our ready made template for material components.
+First you need to install our ready made template for material components. Then you can start building your awesome forms easily.
 ```
 npm install react-native-formly-templates-md --save
 ```
-Then you can start building your awesome forms easily.
+
 ```js
 import React from 'react';
 import {ScrollView } from 'react-native';
@@ -56,7 +57,7 @@ var MaterialForm = React.createClass({
                 },
                 hideExpression: "model.fourthInput==='hide'", //this hides the input when the fourth input value equals 'hide'
             },
-            //component that controls its template option using expressionProperties
+            //component that controls its templateOptions using expressionProperties
             {
                 key: 'thirdInput',
                 type: 'input',
