@@ -17,39 +17,76 @@ npm install react-native-formly --save
 ```
 ## Usage
 ### Basic Usage
-We are now working on our ready made components. Till then you can create your custom components, check the next section.
+First you need to install our ready made template for material components.
+```
+npm install react-native-formly-templates-md --save
+```
+Then you can start building your awesome forms easily.
 ```js
 import React from 'react';
 import {ScrollView } from 'react-native';
 import { Formly} from 'react-native-formly';
+require('react-native-formly-templates-md');
 
-var FormlyApp = React.createClass({
-      formlyConfig: {
-        fields: [
-            // add your form fields here
+var MaterialForm = React.createClass({
+    formlyConfig: {
+        fields: [            // add your form fields here
+            //Basic component            
             {
                 key: 'firstInput',
-                type: 'textInput', //The custom component
+                type: 'input', //material text input
                 templateOptions: {
-                    label:"First input label",
-                    placeholder: "First input"
+                    label: "Label",
+                    placeholder: "Placeholder",
+                    required: true,
+                    description: "Description",
                 }
             },
+            //component that hides on some condition
             {
                 key: 'secondInput',
-                type: 'textInput',
+                type: 'input',
                 templateOptions: {
-                    placeholder: "Second input"
+                    placeholder: "Enter a number between 3 & 10 digits",
+                    label: "Number Input",
+                    type: "number",
+                    minlength: 3,
+                    maxlength: 10
+
                 },
-                hideExpression: "model.firstInput==='hide'", //this hides the input when the first input value equals 'hide'
+                hideExpression: "model.fourthInput==='hide'", //this hides the input when the fourth input value equals 'hide'
+            },
+            //component that controls its template option using expressionProperties
+            {
+                key: 'thirdInput',
+                type: 'input',
+                templateOptions: {
+                    label: "Dynamic Label",
+                    description: "Enter Value to change the label"
+
+                },
+                expressionProperties: {
+                    "templateOptions.disabled": "model.fourthInput==='disable'", //this disables the input when the fourth input value equals 'disable'
+                    "templateOptions.label": "viewValue || 'Dynamic Label'" //this changes the input when the label depending on the value
+                }
+            },
+            //components with custom validator
+            {
+                key: 'fourthInput',
+                type: 'input',
+                templateOptions: {
+                    label: "Custom Validation Input",
+                    description: "Enter `hide` or `disable`"
+                },
                 validators: {
-                    minlength: {
-                        expression: function ({ viewValue, modelValue }) {
-                            return !!viewValue && viewValue.length >= 4 ;
+                    customValueValidator: {
+                        expression: function ({ viewValue, modelValue, param }) {
+                            //empty value or hide or disable
+                            return !viewValue || viewValue == 'hide' || viewValue == 'disable';
                         },
-                        message: "'This should be longer than 4 letters'"
+                        message: "'Should equal to `hide` or `disable`'"
                     }
-                },
+                }
             }
         ]
     },
@@ -70,7 +107,6 @@ var FormlyApp = React.createClass({
         );
     }
 });
-
 ```
 
 ### Create custom components
