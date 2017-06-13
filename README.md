@@ -90,6 +90,24 @@ var MaterialForm = React.createClass({
                         message: "'Should equal to `hide` or `disable`'"
                     }
                 }
+            },
+	    ,
+            {
+                key: 'radioInput',
+                type: 'radio',
+                templateOptions: {
+                    label: "Radio Input",
+                    required: true,
+                    description: "Each radio button have value of different type",
+                    options: [
+                        "string",
+                        2,
+                        { name: "array", value: [1, 2, 3] },
+                        { name: "date", value: new Date() },
+                        { name: "object", value: { prop1: "value1" } }
+                    ]
+
+                }
             }
         ]
     },
