@@ -91,7 +91,6 @@ var MaterialForm = React.createClass({
                     }
                 }
             },
-	    ,
             {
                 key: 'radioInput',
                 type: 'radio',
