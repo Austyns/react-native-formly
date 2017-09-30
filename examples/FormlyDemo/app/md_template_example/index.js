@@ -15,7 +15,7 @@ var MaterialForm = React.createClass({
                     label: "Label",
                     placeholder: "Placeholder",
                     required: true,
-                    description: "Description",
+
                 }
             },
             //component that hides on some condition
@@ -35,7 +35,7 @@ var MaterialForm = React.createClass({
             //component that controls its template option using expressionProperties
             {
                 key: 'thirdInput',
-                type: 'input',
+                type: 'textarea',
                 templateOptions: {
                     label: "Dynamic Label",
                     description: "Enter Value to change the label"
@@ -63,11 +63,46 @@ var MaterialForm = React.createClass({
                         message: "'Should equal to `hide` or `disable`'"
                     }
                 }
+            },
+            {
+                key: 'myMaterialSelect',
+                type: 'select',
+                templateOptions: {
+                    label: "Select Input",
+                    placeholder: "Select a type",
+                    required: true,
+                    description: "Select description",
+                    options: [
+                        "string",
+                        2,
+                        { name: "array", value: [1, 2, 3] },
+                        { name: "date", value: new Date() },
+                        { name: "object", value: { prop1: "value1" } }
+                    ]
+
+                }
+            },
+            {
+                key: 'myMaterialRadio',
+                type: 'radio',
+                templateOptions: {
+                    label: "Radio Input",
+                    required: true,
+                    description: "Select your type",
+                    options: [
+                        "string",
+                        2,
+                        { name: "array", value: [1, 2, 3] },
+                        { name: "date", value: new Date() },
+                        { name: "object", value: { prop1: "value1" } }
+                    ]
+
+                }
             }
         ]
     },
     getInitialState: function () {
-        return { model: {} }
+        return { model: { secondInput: 2222222222222} }
     },
     _onFormlyUpdate: function (model) {
         this.setState({ model: model });
@@ -80,7 +115,7 @@ var MaterialForm = React.createClass({
             <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
                 <Text style={{ backgroundColor: "#eee", borderRadius: 10, borderWidth: 1, borderColor: "transparent", padding: 10, margin: 10 }}>Model: {JSON.stringify(this.state.model, null, '\t')}</Text>
                 <Formly config={this.formlyConfig} model={this.state.model} onFormlyUpdate={this._onFormlyUpdate} onFormlyValidityChange={this._onFormlyValidityChange} />
-                <Text style={{ color: "white", backgroundColor: this.state.formIsValid ? "green" : "red", borderRadius: 10, borderWidth: 1, borderColor: "transparent", padding: 10, margin: 10, textAlign: "center",fontWeight:"bold" }}>Submit</Text>
+                <Text style={{ color: "white", backgroundColor: this.state.formIsValid ? "green" : "red", borderRadius: 10, borderWidth: 1, borderColor: "transparent", padding: 10, margin: 10, textAlign: "center", fontWeight: "bold" }}>Submit</Text>
             </ScrollView>
         );
     }
