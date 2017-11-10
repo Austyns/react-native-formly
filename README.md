@@ -26,13 +26,13 @@ npm install react-native-formly-templates-md --save
 ```
 
 ```js
-import React from 'react';
+import React, { Component }  from 'react';
 import {ScrollView } from 'react-native';
 import { Formly} from 'react-native-formly';
 require('react-native-formly-templates-md');
 
-var MaterialForm = React.createClass({
-    formlyConfig: {
+class MaterialForm  extends Component {
+    formlyConfig = {
         fields: [            // add your form fields here
             //Basic component            
             {
@@ -109,24 +109,26 @@ var MaterialForm = React.createClass({
                 }
             }
         ]
-    },
-    getInitialState: function () {
-        return { model: {} }
-    },
-    _onFormlyUpdate: function (model) {
+    }
+
+    state={ model: {} }
+
+    _onFormlyUpdate = (model) =>{
         this.setState({ model: model });
-    },
-    _onFormlyValidityChange: function (isValid) {
+    }
+
+    _onFormlyValidityChange = (isValid) => {
         this.setState({ formIsValid: isValid });
-    },
-    render: function () {
+    }
+    
+    render () {
         return (
             <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
                 <Formly config={this.formlyConfig} model={this.state.model} onFormlyUpdate={this._onFormlyUpdate} onFormlyValidityChange={this._onFormlyValidityChange} />
             </ScrollView>
         );
     }
-});
+}
 ```
 
 ### Create custom components
@@ -135,6 +137,7 @@ First you need to create react component and add `FieldMixin` to its `mixins`. T
 `FormlyTextInput.js` 
 ```js
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { FieldMixin } from 'react-native-formly';
 import {
     View,
@@ -142,7 +145,7 @@ import {
     TextInput
 } from 'react-native';
 
-var FormlyTextInput = React.createClass({
+var FormlyTextInput = createReactClass({
     mixins: [FieldMixin],
     render: function () {
         let key = this.props.config.key;

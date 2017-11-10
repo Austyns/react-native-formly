@@ -7,7 +7,8 @@
     "test": "test"
   },
   "dependencies": {
-    "jsep": "0.3.0"
+    "jsep": "0.3.0",
+    "prop-types": "15.6.0"
   },
   "peerDependencies": {
     "react-native": "*"
