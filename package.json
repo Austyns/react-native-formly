@@ -1,13 +1,14 @@
 {
   "name": "react-native-formly",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cross platform forms powered by javascript",
   "main": "lib/index.js",
   "scripts": {
     "test": "test"
   },
   "dependencies": {
-    "jsep": "0.3.0"
+    "jsep": "0.3.0",
+    "prop-types": "15.6.0"
   },
   "peerDependencies": {
     "react-native": "*"
