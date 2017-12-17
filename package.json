@@ -1,6 +1,6 @@
 {
   "name": "react-native-formly",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Cross platform forms powered by javascript",
   "main": "src/index.js",
   "scripts": {
