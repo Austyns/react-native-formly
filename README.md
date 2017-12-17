@@ -144,7 +144,7 @@ import {
 } from 'react-native';
 
 class FormlyTextInput extends Component {
-    render: function () {
+    render () {
         let key = this.props.config.key;
         let to = this.props.config.templateOptions || {};
         let model = this.props.model[key];
