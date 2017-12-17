@@ -132,21 +132,18 @@ class MaterialForm  extends Component {
 ```
 
 ### Create custom components
-First you need to create react component and add `FieldMixin` to its `mixins`. The `FieldMixin` adds `onChange` function which you should call when the components value change.  Formly will automaticaly inject to your component the following props: **config**, **model**, **viewValues** and **fieldValidation**.  
+First you need to create react component and Formly will automaticaly inject to your component the following props: **config**, **model**, **viewValues**, **fieldValidation** and **onChange** function which you should call when the components value change.  
 
 `FormlyTextInput.js` 
 ```js
-import React from 'react';
-import createReactClass from 'create-react-class';
-import { FieldMixin } from 'react-native-formly';
+import React, {Component} from 'react';
 import {
     View,
     Text,
     TextInput
 } from 'react-native';
 
-var FormlyTextInput = createReactClass({
-    mixins: [FieldMixin],
+class FormlyTextInput extends Component {
     render: function () {
         let key = this.props.config.key;
         let to = this.props.config.templateOptions || {};
@@ -157,12 +154,12 @@ var FormlyTextInput = createReactClass({
         return (
             <View style={{ flex: 1 }}>
                 <Text style={{fontWeight:"bold",color:"black"}}>{to.label}</Text>
-                <TextInput editable={!to.disabled} underlineColorAndroid={fieldValidationResult.isValid ? "green" : "red"} value={model || viewValue} placeholder={to.placeholder} onChangeText={this.onChange} />
+                <TextInput editable={!to.disabled} underlineColorAndroid={fieldValidationResult.isValid ? "green" : "red"} value={model || viewValue} placeholder={to.placeholder} onChangeText={this.props.onChange} />
                 <Text style={{ color: "red" }}>{Object.keys(validationMessages).length != 0 ? Object.values(validationMessages)[0] : null}</Text>
             </View>
         );
     }
-});
+}
 
 module.exports = FormlyTextInput;
 ```
