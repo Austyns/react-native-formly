@@ -1,8 +1,9 @@
 'use strict';
 import React, { Component } from 'react';
-import {FieldsConfig, WrappersConfig} from './../formlyConfig';
+import { FieldsConfig, WrappersConfig } from './../formlyConfig';
 
 import FieldGroup from './../components/FieldGroup';
+import Field from './../components/Field';
 import FormlyExpressions from './FormlyExpressions';
 import Utils from './Utils';
 import {
@@ -11,14 +12,14 @@ import {
 } from 'react-native';
 
 class FieldProps {
-  constructor(key, config, viewValues, model, fieldValidation, onValueUpdate, styles) {
-    this.key = key;
+  constructor(renderingKey, config, viewValues, model, fieldValidation, onValueUpdate) {
+    this.key = renderingKey;
+    this.renderingKey = renderingKey;
     this.config = config;
     this.viewValues = viewValues;
     this.model = model;
     this.fieldValidation = fieldValidation;
     this.onValueUpdate = onValueUpdate;
-    this.styles = styles;
   }
   get props() {
     var props = {};
@@ -26,20 +27,20 @@ class FieldProps {
       props[key] = this[key];
     }
     return props;
-    //return {key:this.key, config:this.config, viewValues:this.viewValues, model:this.model, fieldValidation:this.fieldValidation, onValueUpdate:this.onValueUpdate, styles:this.styles };
+    //return {key:this.key, config:this.config, viewValues:this.viewValues, model:this.model, fieldValidation:this.fieldValidation, onValueUpdate:this.onValueUpdate };
 
   }
 }
 
 class FieldGroupProps {
-  constructor(key, config, viewValues, model, fieldsValidation, onValueUpdate, styles) {
-    this.key = key;
+  constructor(renderingKey, config, viewValues, model, fieldsValidation, onValueUpdate) {
+    this.key = renderingKey;
+    this.renderingKey = renderingKey;
     this.config = config;
     this.viewValues = viewValues;
     this.model = model;
     this.fieldsValidation = fieldsValidation;
     this.onValueUpdate = onValueUpdate;
-    this.styles = styles;
   }
   get props() {
     var props = {};
@@ -47,17 +48,17 @@ class FieldGroupProps {
       props[key] = this[key];
     }
     return props;
-    //return {key:this.key, config:this.config, viewValues:this.viewValues, model:this.model, fieldValidation:this.fieldValidation, onValueUpdate:this.onValueUpdate, styles:this.styles };
+    //return {key:this.key, config:this.config, viewValues:this.viewValues, model:this.model, fieldValidation:this.fieldValidation, onValueUpdate:this.onValueUpdate };
   }
 }
 class FormlyComponentProps {
-  constructor(config, viewValues, model, fieldsValidation, onValueUpdate, styles) {
+  constructor(index, config, viewValues, model, fieldsValidation, onValueUpdate) {
+    this.index = index;
     this.config = config;
     this.viewValues = viewValues;
     this.model = model;
     this.fieldsValidation = fieldsValidation;
     this.onValueUpdate = onValueUpdate;
-    this.styles = styles;
   }
 
 }
@@ -67,28 +68,29 @@ class FormlyComponentProps {
 class PropsManipulator {
 
   static propsToField(formlyComponentProps) {
-    let {config, viewValues, model, fieldsValidation, onValueUpdate, styles} = formlyComponentProps;
+    let { index, config, viewValues, model, fieldsValidation, onValueUpdate } = formlyComponentProps;
 
-    var key = config.key || null;
+    var renderingKey = config.type + "_" + config.key + "_" + index;
     //only send the field validation as a prop instead of the fields validation
-    var fieldValidation = fieldsValidation[config.key] || {};
+    var fieldValidation = fieldsValidation[renderingKey] || {};
     //evaluate the expression properties before sending the props to the field
     if (config.hasOwnProperty('expressionProperties'))
       this.evaluateExpressionProperties(config, viewValues, model);
 
-    return new FieldProps(key, config, viewValues, model, fieldValidation, onValueUpdate, styles);
+    return new FieldProps(renderingKey, config, viewValues, model, fieldValidation, onValueUpdate);
   }
 
   static propsToFieldGroup(formlyComponentProps) {
-    let {config, viewValues, model, fieldsValidation, onValueUpdate, styles} = formlyComponentProps;
+    let { index, config, viewValues, model, fieldsValidation, onValueUpdate } = formlyComponentProps;
 
-    var key = config.key || null;
+    var renderingKey = "fieldGroup" + "_" + (config.key ? (config.key + "_") : "") + index;
     //send a the field group a isolated model if it needs one ... the same for viewValues
     if (config.key) model = model[config.key] ? model[config.key] : {};
     if (config.key) viewValues = viewValues[config.key] ? viewValues[config.key] : {};
-    if (config.key) fieldsValidation = fieldsValidation[config.key] ? fieldsValidation[config.key] : {};
 
-    return new FieldGroupProps(key, config, viewValues, model, fieldsValidation, onValueUpdate, styles);
+    fieldsValidation = fieldsValidation[renderingKey] ? fieldsValidation[renderingKey] : { isValid: undefined, fields: {} };
+
+    return new FieldGroupProps(renderingKey, config, viewValues, model, fieldsValidation, onValueUpdate);
   }
 
 
@@ -100,7 +102,6 @@ class PropsManipulator {
       // note that field.key could be undefined
       let expressionContext = { "viewValue": viewValues[field.key], "modelValue": model[field.key], "model": model };
       Utils.setPropertyValue(field, key, FormlyExpressions.evaluate(field.expressionProperties[key], expressionContext));
-
     };
 
   }
@@ -113,27 +114,56 @@ export default class FieldsRenderer {
 
   //////////////////////////////////////////rendering functions//////////////////////////////////////////////////
   static renderField(FieldProps) {
-    //config aliased to field makes config more readable
-    let {config: field, viewValues, model} = FieldProps;
-
-    var fieldComponent = field.component ? field.component : FieldsConfig.getTypeComponent(field.type);
-    if (!fieldComponent) {
-      throw new Error('Formly: "' + field.type + '" has not been added to FormlyConfig\'s field types.');
-    }
-    var propsFromConfig;
-    if (field.props) {
-      propsFromConfig = typeof field.props === 'function' ? field.props(model, field) : field.props;
-    }
-
-    //assign to variable to allow JSX compiler to pick up as a prop instead of string
-    var FieldComponent = fieldComponent;
-    var component = <FieldComponent  {...propsFromConfig} {...FieldProps.props}  />;
-    return component;
+    return <Field {...FieldProps.props} />;
   }
 
   static renderFieldGroup(FieldGroupProps) {
+    //config aliased to field makes config more readable
+    let { renderingKey: fieldGroupRenderKey, config: field, viewValues, model, fieldsValidation: fieldGroupValidation } = FieldGroupProps;
+    /*
+        this function is passed to the fieldGroup fields which is called when the field value changes.
+        when this function is invoked it updates the model of the field group and notifies its parent by calling its parent onValueUpdate
+        the invocation continues till reaching formly onValueUpdate
+      */
+
+
+    function onValueUpdate(renderingKey, fieldKey, viewValue, modelValue, validationResult) {
+      //the field calls this function with its key and the updated value
+      //if the fieldGroup have separated model it updates it and send it to the parent model to be updated
+      //while if the field group had no separate model it updates send the field key and the new value to its parent to handle updating the model
+      if (validationResult === undefined)
+        delete fieldGroupValidation.fields[renderingKey];
+      else
+        fieldGroupValidation.fields[renderingKey] = validationResult;
+      fieldGroupValidation.isValid = Utils.getFormValidity(fieldGroupValidation.fields);
+
+      if (field.key) {
+        //clone ViewValues
+        viewValues = { ...viewValues };
+        viewValues[fieldKey] = viewValue;
+
+        //clone model
+        model = { ...model }
+        if (modelValue === undefined)
+          delete model[fieldKey];
+        else
+          model[fieldKey] = modelValue;
+
+        FieldGroupProps.onValueUpdate(fieldGroupRenderKey, field.key, viewValues, model, fieldGroupValidation);
+      }
+      else
+        FieldGroupProps.onValueUpdate(fieldGroupRenderKey, fieldKey, viewValue, modelValue, fieldGroupValidation);
+
+
+
+    }
     return (
-      <FieldGroup {...FieldGroupProps.props} />
+      <FieldGroup  {...FieldGroupProps.props} >
+        {field.fieldGroup.map(function (field, index) {
+          var props = new FormlyComponentProps(index, field, viewValues, model, fieldGroupValidation.fields, onValueUpdate);
+          return FieldsRenderer.generateFieldTag(props);
+        })}
+      </FieldGroup>
     );
   }
 
@@ -141,7 +171,7 @@ export default class FieldsRenderer {
 
   static generateFieldTag(FormlyComponentProps) {
     //config aliased to field makes config more readable
-    let {config: field, viewValues, model} = FormlyComponentProps;
+    let { config: field, viewValues, model } = FormlyComponentProps;
     var fieldComponent;
 
     if (this.shouldHide(field, viewValues, model)) {
@@ -156,6 +186,7 @@ export default class FieldsRenderer {
       let FieldProps = convertedProps = PropsManipulator.propsToField(FormlyComponentProps);
       fieldComponent = this.renderField(FieldProps);
     }
+
     //return wrapped component
     return this.wrapComponent(field, fieldComponent, convertedProps);
   }
@@ -181,13 +212,10 @@ export default class FieldsRenderer {
 
   //////////////////////////////////////////Wrapping functions//////////////////////////////////////////////////
   static wrapComponent(fieldObject, fieldComponent, componentProps) {
-    //wrap component with the type wrappers 
-
-    //wrap component with wrappers from the field config 
     var wrappers = this.getWrappers(fieldObject);
 
     wrappers.forEach(function (wrapper) {
-      fieldComponent = this.wrapComponentWith(fieldComponent, wrapper, fieldObject, componentProps);
+      fieldComponent = this.wrapComponentWith(fieldComponent, wrapper, componentProps);
     }, this);
     return fieldComponent;
 
@@ -222,7 +250,7 @@ export default class FieldsRenderer {
     }
     return wrappers;
   }
-  static wrapComponentWith(component, wrapperComponent, fieldObject, componentProps) {
+  static wrapComponentWith(component, wrapperComponent, componentProps) {
     var WrapperComponent = wrapperComponent;
     if (!componentProps.key)
       delete componentProps.key;

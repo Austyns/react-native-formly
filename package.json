@@ -2,19 +2,24 @@
   "name": "react-native-formly",
   "version": "0.0.2",
   "description": "Cross platform forms powered by javascript",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "jest"
   },
   "jest": {
     "preset": "react-native",
+    "setupTestFrameworkScriptFile": "./setupTests.js",
+    "snapshotSerializers": [
+      "./node_modules/enzyme-to-json/serializer"
+    ],
     "testPathIgnorePatterns": [
       "examples/",
       "node_modules/"
     ],
     "modulePathIgnorePatterns": [
       "examples/"
-    ]
+    ],
+    "collectCoverage": false
   },
   "dependencies": {
     "jsep": "0.3.0",
@@ -42,8 +47,14 @@
   "homepage": "https://github.com/Assem-Hafez/react-native-formly#readme",
   "devDependencies": {
     "babel-jest": "^21.2.0",
+    "enzyme": "^3.2.0",
+    "enzyme-adapter-react-16": "^1.1.0",
+    "enzyme-to-json": "^3.2.2",
     "jest": "^21.2.1",
     "jest-react-native": "^18.0.0",
-    "jest-serializer-enzyme": "^1.0.0"
+    "react": "^16.0.0",
+    "react-addons-test-utils": "^15.6.2",
+    "react-dom": "^16.1.1",
+    "react-native": "^0.50.3"
   }
 }

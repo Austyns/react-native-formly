@@ -86,69 +86,48 @@ class Formly extends Component {
     this.state = { formValidation: { isValid: undefined, fields: {} }, viewValues: {} };
   }
 
-  onValueUpdate = (fieldKey, viewValue, modelValue, validationResult) => {
+  onValueUpdate = (renderingKey, fieldKey, viewValue, modelValue, validationResult) => {
     if (!Utils.deepEqual(this.state.viewValues[fieldKey], viewValue)) {
-      var currentViewValuesState = this.state.viewValues;
+      //clone viewValues
+      let currentViewValuesState = { ...this.state.viewValues };
       currentViewValuesState[fieldKey] = viewValue;
       this.setState({ viewValues: currentViewValuesState });
     }
 
-
-
-    //only update the validation state if the new validation is different from the previous to prevent infinite rendering updates
-    //infinite loops happens as the form validation causes rerendering the form fields and form fields update causes revalidating the fields.
-    if (!Utils.deepEqual(this.state.formValidation.fields[fieldKey], validationResult)) {
-      var currentValidationState = this.state.formValidation;
-      currentValidationState.fields[fieldKey] = validationResult;
-      this.setState({ formValidation: currentValidationState });
-      this.updateFormValidity();
-    }
-
-    if (modelValue === undefined)
-      delete this.props.model[fieldKey];
+    var currentValidationState = this.state.formValidation;
+    if (validationResult === undefined)
+      delete currentValidationState.fields[renderingKey];
     else
-      this.props.model[fieldKey] = modelValue;
-
-    this.props.onFormlyUpdate(this.props.model);
-
-
-  }
-
-  updateFormValidity = () => {
+      currentValidationState.fields[renderingKey] = validationResult;
+    this.setState({ formValidation: currentValidationState });
     var prevFormValidity = this.state.formValidation.isValid;
-    var newFormValidity = true;
-    var iterateThrough = function (obj) {
-      if (newFormValidity && Object(obj) === obj) // loop only if the current form validity is true && obj is type of object
-        for (const key of Object.keys(obj)) {
-          if (obj[key].hasOwnProperty('isValid')) {
-            if (!obj[key].isValid) {
-              newFormValidity = false;
-            }
-          }
-          else
-            iterateThrough(obj[key]);
-        };
-    };
-
-    iterateThrough(this.state.formValidation.fields);
-
-
+    let newFormValidity = Utils.getFormValidity(this.state.formValidation.fields);
     this.state.formValidation.isValid = newFormValidity;
     if (this.props.onFormlyValidityChange && prevFormValidity !== this.state.formValidation.isValid) {
       this.props.onFormlyValidityChange(this.state.formValidation.isValid);
     }
+    //clone model
+    let currentModel = { ...this.props.model }
+    if (modelValue === undefined)
+      delete currentModel[fieldKey];
+    else
+      currentModel[fieldKey] = modelValue;
+
+    this.props.onFormlyUpdate(currentModel);
+
 
   }
-  
+
+
   render() {
     var model = this.props.model;
     var viewValues = this.state.viewValues;
     var fieldsValidation = this.state.formValidation.fields;
     var onValueUpdate = this.onValueUpdate;
-    var fields = this.props.config.fields.map(function (field) {
-      var props = new FormlyComponentProps(field, viewValues, model, fieldsValidation, onValueUpdate);
+    var fields = Array.isArray(this.props.config.fields) ? this.props.config.fields.map(function (field, index) {
+      var props = new FormlyComponentProps(index, field, viewValues, model, fieldsValidation, onValueUpdate);
       return FieldsRenderer.generateFieldTag(props);
-    });
+    }) : [];
     return (
       <View style={{ flex: 1 }}>
         {fields}
@@ -156,13 +135,13 @@ class Formly extends Component {
     );
   }
 }
-Formly.defaultProps  = { model: {} }
+Formly.defaultProps = { model: {} }
 
 Formly.propTypes = {
   onFormlyUpdate: PropTypes.func.isRequired,
+  onFormlyValidityChange: PropTypes.func,
   config: PropTypes.shape({
-    name: PropTypes.string,
-    fields: PropTypes.arrayOf(field)
+    fields: PropTypes.arrayOf(field).isRequired
   }),
   model: PropTypes.object
 }

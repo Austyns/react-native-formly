@@ -1,5 +1,6 @@
 
 module.exports = {
+  getFormValidity: getFormValidity,
   deepEqual: deepEqual,
   isEmptyObject: isEmptyObject,
   setPropertyValue: setPropertyValue,
@@ -9,6 +10,25 @@ module.exports = {
   isObject: isObject,
   isNumber: isNumber,
 };
+function getFormValidity(formFields = {}) {
+  var newFormValidity = true;
+  var iterateThrough = function (obj) {
+    if (newFormValidity && Object(obj) === obj) // loop only if the current form validity is true && obj is type of object
+      for (const key of Object.keys(obj)) {
+        if (obj[key].hasOwnProperty('isValid')) {
+          if (!obj[key].isValid) {
+            newFormValidity = false;
+          }
+        }
+        else
+          iterateThrough(obj[key]);
+      };
+  };
+
+  iterateThrough(formFields);
+
+  return newFormValidity;
+}
 
 function deepEqual(x, y) {
   return (x && y && typeof x === 'object' && typeof y === 'object') ?

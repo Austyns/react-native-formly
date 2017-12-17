@@ -12,7 +12,6 @@ module.exports = {
 };
 // wrappers functions
 function setWrapper(name, options) {
-    console.log(name);
     if (Array.isArray(name)) {
         name.forEach(function (wrapperType) {
             setWrapper(wrapperType);
